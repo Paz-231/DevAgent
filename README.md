@@ -1,6 +1,6 @@
 # Skills
 
-A collection of [agent skills](https://code.claude.com/docs/en/skills) for Claude Code. Each skill is a folder containing a `SKILL.md` with frontmatter (name, description) and instructions that Claude loads on demand when the task matches.
+A collection of agent skills for Codex and Claude Code. Each skill is a folder containing a `SKILL.md` with frontmatter (`name`, `description`, and supported optional fields) plus instructions that the agent loads when the task matches.
 
 ## Available skills
 
@@ -85,14 +85,17 @@ Use it when:
 Clone the repo and copy (or symlink) a skill folder into your skills directory:
 
 ```bash
-# Available in all projects
+# Codex
+cp -r code-structure ~/.codex/skills/
+
+# Claude Code
 cp -r code-structure ~/.claude/skills/
 
-# Or scoped to a single project
+# Claude Code, scoped to one project
 cp -r code-structure /path/to/project/.claude/skills/
 ```
 
-Claude Code picks up the skill automatically and invokes it when a task matches the skill's description. You can also invoke one explicitly with `/code-structure` or `/evidence-driven-testing`.
+Both runtimes discover installed skills from their frontmatter and load the instructions when a task matches the description. Claude Code also supports explicit slash-command invocation such as `/code-structure` or `/evidence-driven-testing`.
 
 ## Adding a new skill
 

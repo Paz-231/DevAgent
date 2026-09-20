@@ -7,7 +7,6 @@ description: >
   plain @greptile mention refuses to review. Use when the user wants to fully optimize a large
   PR/MR/CL against Greptile's code review standards.
 license: MIT
-compatibility: Requires git, gh (GitHub CLI) or glab (GitLab CLI) authenticated, and Greptile installed on the repo. For Perforce, requires p4 CLI authenticated.
 metadata:
   author: greptileai
   version: "1.3"
@@ -17,6 +16,12 @@ allowed-tools: Bash(gh:*) Bash(glab:*) Bash(git:*) Bash(p4:*)
 # Greploop Apps
 
 Iteratively fix a PR/MR/CL until Greptile gives a perfect review: 5/5 confidence, zero unresolved comments. This variant tags `@greptile-apps` to trigger reviews, which bypasses the file-count limit that makes Greptile skip huge PRs (e.g. "Too many files changed for review"). Because auto-review skips those PRs, every push needs a fresh `@greptile-apps review` comment.
+
+## Requirements
+
+GitHub and GitLab workflows need `git` plus an authenticated `gh` or `glab`
+client. Perforce workflows need an authenticated `p4` client. Greptile must be
+installed on the repository.
 
 ## Inputs
 
