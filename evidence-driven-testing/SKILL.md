@@ -8,7 +8,6 @@ description: >
   verifiable evidence that it works, instead of prose claims — including
   headless environments (scripted screenshots and probes) and non-UI changes
   (measured numbers, output pairs).
-compatibility: Screen-recording path requires a GUI environment the agent can drive — built-in computer use, or the cua-driver CLI (trycua/cua) when the harness has no computer-use tools — plus an authenticated browser session for the app under test. The bundled recorder (scripts/evidence.py) runs on Linux (X11 via x11grab, Wayland via wf-recorder), macOS (avfoundation, needs Screen Recording permission) and Windows (gdigrab) and needs Python 3 plus ffmpeg + ffprobe built with libx264 and the ass filter. The headless path requires only a running app and a scriptable browser (e.g. Playwright via npx). Posting evidence requires gh (GitHub CLI) or equivalent.
 metadata:
   version: "1.2"
 ---
@@ -16,6 +15,15 @@ metadata:
 # Evidence-Driven Testing
 
 Record annotated proof of behavior, then attach it to the PR and tracker issue.
+
+## Requirements
+
+The screen-recording path needs a GUI the agent can drive through built-in
+computer use or the `cua-driver` CLI, plus an authenticated browser session
+for the app under test. The bundled recorder runs on Linux, macOS, and Windows
+and needs Python 3 plus `ffmpeg` and `ffprobe` built with `libx264` and the
+`ass` filter. The headless path needs a running app and a scriptable browser
+such as Playwright. Posting evidence requires `gh` or an equivalent client.
 
 The recording is the capture of you testing the app via computer use: start the
 recorder, then drive the app yourself — click, type, navigate — through each
@@ -38,9 +46,10 @@ session folder.
 ## The recorder
 
 `EVIDENCE` below means the path to `scripts/evidence.py` inside this skill's
-folder (wherever the skill is installed, e.g.
-`~/.claude/skills/evidence-driven-testing/scripts/evidence.py`). It needs only
-Python 3 and FFmpeg.
+installed folder. Claude Code commonly puts it at
+`~/.claude/skills/evidence-driven-testing/scripts/evidence.py`. Codex commonly
+uses `~/.codex/skills/evidence-driven-testing/scripts/evidence.py`. It needs
+only Python 3 and FFmpeg.
 
 - **Check first**: `python3 $EVIDENCE doctor` — verifies `ffmpeg`, `ffprobe`,
   `libx264`, and the `ass` filter (`ready`), then which screen-capture source

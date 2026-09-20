@@ -6,7 +6,6 @@ description: >
   actionable comments, pushes/re-shelves, re-triggers review, and repeats. Use when the user wants to
   fully optimize a PR/MR/CL against Greptile's code review standards.
 license: MIT
-compatibility: Requires git, gh (GitHub CLI) or glab (GitLab CLI) authenticated, and Greptile installed on the repo. For Perforce, requires p4 CLI authenticated.
 metadata:
   author: greptileai
   version: "1.3"
@@ -16,6 +15,12 @@ allowed-tools: Bash(gh:*) Bash(glab:*) Bash(git:*) Bash(p4:*)
 # Greploop
 
 Iteratively fix a PR/MR/CL until Greptile gives a perfect review: 5/5 confidence, zero unresolved comments.
+
+## Requirements
+
+GitHub and GitLab workflows need `git` plus an authenticated `gh` or `glab`
+client. Perforce workflows need an authenticated `p4` client. Greptile must be
+installed on the repository.
 
 ## Inputs
 
