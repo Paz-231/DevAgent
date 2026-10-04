@@ -1,0 +1,34 @@
+{
+  "name": "devagent",
+  "version": "1.0.0",
+  "description": "Seven development skills for isolated changes, code structure, testing evidence, PR review, and clear writing.",
+  "author": {
+    "name": "Patrick Gruber",
+    "url": "https://github.com/Paz-231"
+  },
+  "repository": "https://github.com/Paz-231/DevAgent",
+  "skills": [
+    "./before-and-after",
+    "./code-structure",
+    "./evidence-driven-testing",
+    "./greploop",
+    "./greploop-apps",
+    "./new-feature",
+    "./unslop"
+  ],
+  "interface": {
+    "displayName": "DevAgent",
+    "shortDescription": "Development workflow skills",
+    "longDescription": "Use seven focused skills for Git worktree isolation, reusable code structure, testing evidence, before/after comparisons, Greptile review loops, and editing prose. The plugin provides instructions and helper scripts, not connected services. Git, review tools, browsers, Python, and FFmpeg remain task-specific prerequisites. Installing the plugin does not install those tools or grant access to GitHub or other services.",
+    "developerName": "Patrick Gruber",
+    "category": "Developer Tools",
+    "capabilities": ["Code structure", "Testing evidence", "Pull request workflows", "Writing"],
+    "websiteURL": "https://github.com/Paz-231/DevAgent",
+    "logo": "./assets/devagent-icon.svg",
+    "composerIcon": "./assets/devagent-icon.svg",
+    "defaultPrompt": [
+      "Review this project's code structure without changing files.",
+      "Capture before and after evidence for this authorized change."
+    ]
+  }
+}

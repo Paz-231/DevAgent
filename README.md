@@ -82,6 +82,69 @@ Use it when:
 
 ## Installation
 
+### Install the DevAgent plugin
+
+This repository is a skills-only plugin with a Codex compatibility manifest
+at `.codex-plugin/plugin.json`. The manifest points to the existing seven
+skill folders, so standalone installation still works and no second copy
+needs maintenance. Each bundled third-party skill retains its own license.
+The package does not declare a single license for all components.
+
+Register the repository marketplace in a current Codex CLI:
+
+```bash
+codex plugin marketplace add Paz-231/DevAgent --ref main
+codex plugin add devagent@devagent-marketplace
+```
+
+Alternatively, open `/plugins`, choose `devagent-marketplace`, and install
+`devagent`. Start a new session after installation. In the ChatGPT desktop app, use the
+Plugins Directory and select the configured DevAgent marketplace. You can
+then choose a bundled skill with `@` in ChatGPT or `$` in Codex.
+
+Codex names the installed skills with the plugin prefix. For example, use
+`$devagent:code-structure Review this project's code structure`.
+`codex plugin list --json` reports installation and enablement.
+
+Codex CLI 0.160.0 has been tested with this package. It installs version
+1.0.0 and the app-server discovers all seven prefixed skills from the plugin
+cache with no load errors, including from a directory outside this repository.
+
+To test an unmerged branch, replace `main` with that branch name. To test a
+local checkout, use `codex plugin marketplace add /absolute/path/to/DevAgent`.
+The marketplace entry resolves `./` from the repository root, not from the
+`.agents/plugins/` directory.
+
+This catalog makes the package discoverable in supported local clients.
+It does not publish DevAgent to the universal public directory, install it
+in a ChatGPT account, or guarantee availability in browser chats. Workspace
+import or public submission is a separate distribution step.
+
+Installation adds instructions and bundled helpers, not GitHub permissions,
+Greptile, browsers, Python, or FFmpeg. Those prerequisites still depend on
+the selected skill and the environment. The repo's `AGENTS.md` remains a
+project template; plugin installation does not apply it to other repositories.
+
+Package tests run alongside the existing recorder tests:
+
+```bash
+uv run --with pytest pytest tests/ -q
+```
+
+The `Plugin checks` GitHub Actions workflow runs the complete suite on
+Ubuntu 24.04 with Python 3.12 and FFmpeg. It also installs the package with
+Codex CLI 0.160.0, checks that DevAgent is enabled, and loads all seven
+skills through the app-server from a temporary directory. Run that check
+locally after installation with `python tests/check_plugin_host.py`.
+Recorder tests need
+consistent process IDs across Python, `/proc`, and `ps`; environments that
+remap process IDs can fail the recorder's process identity safeguards.
+
+Official references: [plugin packaging](https://developers.openai.com/plugins/build/plugins)
+and [plugin installation](https://learn.chatgpt.com/docs/plugins).
+
+### Install a standalone skill
+
 Clone the repo and copy (or symlink) a skill folder into your skills directory:
 
 ```bash

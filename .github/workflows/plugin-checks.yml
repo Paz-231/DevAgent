@@ -1,0 +1,45 @@
+name: Plugin checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install test dependencies
+        run: |
+          python -m pip install pytest==8.4.2
+          sudo apt-get update
+          sudo apt-get install --yes ffmpeg
+      - name: Run all tests
+        run: python -m pytest -q
+      - name: Install plugin with Codex
+        run: |
+          npx --yes @openai/codex@0.160.0 plugin marketplace add . --json
+          npx --yes @openai/codex@0.160.0 plugin add devagent@devagent-marketplace --json
+          npx --yes @openai/codex@0.160.0 plugin list --json > plugin-list.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          listing = json.loads(Path('plugin-list.json').read_text())
+          print(json.dumps(listing, indent=2))
+          installed = listing['installed']
+          assert any(item['name'] == 'devagent' and item['enabled'] for item in installed)
+          PY
+      - name: Load all seven skills outside the repository
+        run: python tests/check_plugin_host.py
