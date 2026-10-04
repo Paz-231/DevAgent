@@ -94,12 +94,21 @@ Register the repository marketplace in a current Codex CLI:
 
 ```bash
 codex plugin marketplace add Paz-231/DevAgent --ref main
+codex plugin add devagent@devagent-marketplace
 ```
 
-Open `/plugins`, choose `devagent-marketplace`, and install `devagent`.
-Start a new session after installation. In the ChatGPT desktop app, use the
+Alternatively, open `/plugins`, choose `devagent-marketplace`, and install
+`devagent`. Start a new session after installation. In the ChatGPT desktop app, use the
 Plugins Directory and select the configured DevAgent marketplace. You can
 then choose a bundled skill with `@` in ChatGPT or `$` in Codex.
+
+Codex names the installed skills with the plugin prefix. For example, use
+`$devagent:code-structure Review this project's code structure`.
+`codex plugin list --json` reports installation and enablement.
+
+Codex CLI 0.160.0 has been tested with this package. It installs version
+1.0.0 and the app-server discovers all seven prefixed skills from the plugin
+cache with no load errors, including from a directory outside this repository.
 
 To test an unmerged branch, replace `main` with that branch name. To test a
 local checkout, use `codex plugin marketplace add /absolute/path/to/DevAgent`.
@@ -121,6 +130,12 @@ Package tests run alongside the existing recorder tests:
 ```bash
 uv run --with pytest pytest tests/ -q
 ```
+
+The `Plugin checks` GitHub Actions workflow runs the complete suite on
+Ubuntu 24.04 with Python 3.12 and FFmpeg. It also installs the package with
+Codex CLI 0.160.0 and checks that DevAgent is enabled. Recorder tests need
+consistent process IDs across Python, `/proc`, and `ps`; environments that
+remap process IDs can fail the recorder's process identity safeguards.
 
 Official references: [plugin packaging](https://developers.openai.com/plugins/build/plugins)
 and [plugin installation](https://learn.chatgpt.com/docs/plugins).
