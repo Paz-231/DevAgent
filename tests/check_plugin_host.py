@@ -2,9 +2,10 @@
 
 import json
 from pathlib import Path
-import selectors
+from queue import Empty, Queue
 import subprocess
 import tempfile
+from threading import Thread
 import time
 
 
@@ -16,26 +17,35 @@ def check_host():
         ['npx', '--yes', '@openai/codex@0.160.0', 'app-server'],
         stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True,
     )
+    responses = Queue()
+
+    def read_stdout():
+        for line in process.stdout:
+            responses.put(line)
+        responses.put(None)
+
+    reader = Thread(target=read_stdout, daemon=True)
+    reader.start()
 
     def send(message):
         process.stdin.write(json.dumps(message) + '\n')
         process.stdin.flush()
 
     def receive(request_id):
-        with selectors.DefaultSelector() as selector:
-            selector.register(process.stdout, selectors.EVENT_READ)
-            deadline = time.monotonic() + 30
-            while time.monotonic() < deadline:
-                if selector.select(timeout=1):
-                    line = process.stdout.readline()
-                    if not line:
-                        raise RuntimeError('Codex app-server stopped before responding')
-                    response = json.loads(line)
-                    if response.get('id') == request_id:
-                        if 'error' in response:
-                            raise RuntimeError(response['error'])
-                        return response['result']
-            raise TimeoutError('Codex app-server did not respond within 30 seconds')
+        deadline = time.monotonic() + 30
+        while time.monotonic() < deadline:
+            try:
+                line = responses.get(timeout=max(0, deadline - time.monotonic()))
+            except Empty:
+                break
+            if line is None:
+                raise RuntimeError('Codex app-server stopped before responding')
+            response = json.loads(line)
+            if response.get('id') == request_id:
+                if 'error' in response:
+                    raise RuntimeError(response['error'])
+                return response['result']
+        raise TimeoutError('Codex app-server did not respond within 30 seconds')
 
     try:
         send({'id': 0, 'method': 'initialize', 'params': {
@@ -57,14 +67,19 @@ def check_host():
         assert all(skill['enabled'] for skill in skills), skills
         print(json.dumps({'loadedSkills': sorted(expected), 'errors': errors}, indent=2))
     finally:
-        process.terminate()
+        process.stdin.close()
         try:
             process.wait(timeout=5)
         except subprocess.TimeoutExpired:
-            process.kill()
-            process.wait()
-        process.stdin.close()
-        process.stdout.close()
+            process.terminate()
+            try:
+                process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.wait()
+        reader.join(timeout=5)
+        if not reader.is_alive():
+            process.stdout.close()
 
 
 if __name__ == '__main__':
