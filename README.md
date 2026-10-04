@@ -133,7 +133,10 @@ uv run --with pytest pytest tests/ -q
 
 The `Plugin checks` GitHub Actions workflow runs the complete suite on
 Ubuntu 24.04 with Python 3.12 and FFmpeg. It also installs the package with
-Codex CLI 0.160.0 and checks that DevAgent is enabled. Recorder tests need
+Codex CLI 0.160.0, checks that DevAgent is enabled, and loads all seven
+skills through the app-server from a temporary directory. Run that check
+locally after installation with `python tests/check_plugin_host.py`.
+Recorder tests need
 consistent process IDs across Python, `/proc`, and `ps`; environments that
 remap process IDs can fail the recorder's process identity safeguards.
 

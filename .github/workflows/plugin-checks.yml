@@ -41,3 +41,5 @@ jobs:
           installed = listing['installed']
           assert any(item['name'] == 'devagent' and item['enabled'] for item in installed)
           PY
+      - name: Load all seven skills outside the repository
+        run: python tests/check_plugin_host.py
